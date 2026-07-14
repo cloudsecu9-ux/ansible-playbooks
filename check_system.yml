@@ -1,0 +1,16 @@
+---
+- name: Target Server System Information Check
+  hosts: all
+  gather_facts: yes  # 서버의 하드웨어/OS 정보를 자동으로 수집합니다.
+  tasks:
+    - name: Print OS Distribution and Version
+      debug:
+        msg: "The target OS is {{ ansible_distribution }} {{ ansible_distribution_version }}"
+
+    - name: Print Total Memory Capacity
+      debug:
+        msg: "Total memory on this server is {{ ansible_memtotal_mb }} MB"
+
+    - name: Print Server IP Address
+      debug:
+        msg: "The IP address of the target server is {{ ansible_default_ipv4.address }}"
