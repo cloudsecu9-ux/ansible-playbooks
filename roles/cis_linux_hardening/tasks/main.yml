@@ -1,0 +1,27 @@
+---
+# 1. 초기 결과 리포트 배열 변수 초기화
+- name: 리포트 변수 초기화
+  ansible.builtin.set_fact:
+    cis_report_list: []
+
+# 2. 카테고리별 점검 파일 순차 호출
+- name: "[Category 1] 파일시스템 및 초기 설정 점검"
+  ansible.builtin.include_tasks: 01_initial_setup.yml
+
+- name: "[Category 2] 서비스 관리 점검"
+  ansible.builtin.include_tasks: 02_services.yml
+
+- name: "[Category 3] 네트워크 점검"
+  ansible.builtin.include_tasks: 03_network.yml
+
+- name: "[Category 4] 계정 및 액세스 제어 점검"
+  ansible.builtin.include_tasks: 04_access_control.yml
+
+# 3. 최종 요약 리포트 출력
+- name: 📊 [CIS 점검 종합 요약 리포트]
+  ansible.builtin.debug:
+    msg:
+      - "=========================================="
+      - " Target Host: {{ inventory_hostname }}"
+      - "=========================================="
+      - "{{ cis_report_list }}"
