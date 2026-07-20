@@ -1,0 +1,7 @@
+---
+- name: OS CIS Benchmark 기본 점검
+  hosts: all
+  become: yes
+
+  roles:
+    - role: cis_linux_hardening
