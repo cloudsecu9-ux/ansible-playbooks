@@ -1,0 +1,15 @@
+---
+- name: "[CIS 2.1] 취약한 서비스(Telnet) 데몬 상태 점검"
+  ansible.builtin.systemd:
+    name: telnet
+  register: telnet_service_status
+  ignore_errors: yes
+
+- name: "[CIS 2.1] Telnet 서비스 비활성화 여부 결과 수집"
+  ansible.builtin.set_fact:
+    cis_report_list: "{{ cis_report_list + [{
+      'id': 'CIS-2.1.1',
+      'category': 'Services',
+      'title': 'Telnet 서비스 비활성화 점검',
+      'status': (telnet_service_status.status.ActiveState | default('inactive') != 'active') | ternary('PASS', 'FAIL')
+    }] }}"
