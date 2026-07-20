@@ -4,4 +4,4 @@
   become: yes
 
   roles:
-    - role: cis_linux_hardening
+   - role: "../roles/cis_linux_hardening"
