@@ -1,0 +1,16 @@
+---
+- name: "[CIS 4.1] SSH Root 직접 로그인 차단 설정 검사"
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^\s*PermitRootLogin\s+no'
+    state: query
+  register: ssh_root_check
+
+- name: "[CIS 4.1] SSH Root 직접 로그인 결과 수집"
+  ansible.builtin.set_fact:
+    cis_report_list: "{{ cis_report_list + [{
+      'id': 'CIS-4.1.1',
+      'category': 'Access Control',
+      'title': 'SSH Root 직접 로그인 차단 (PermitRootLogin no)',
+      'status': (ssh_root_check.found > 0) | ternary('PASS', 'FAIL')
+    }] }}"
