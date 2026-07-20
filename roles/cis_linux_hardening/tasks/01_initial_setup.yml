@@ -1,0 +1,18 @@
+---
+- name: "[CIS 1.1] 주요 설정 파일 권한 검사 (/etc/passwd, /etc/shadow)"
+  ansible.builtin.stat:
+    path: "{{ item.path }}"
+  register: file_stats
+  loop:
+    - { path: '/etc/passwd', max_mode: '0644', id: 'CIS-1.1.1', title: '/etc/passwd 권한 검사' }
+    - { path: '/etc/shadow', max_mode: '0600', id: 'CIS-1.1.2', title: '/etc/shadow 권한 검사' }
+
+- name: "[CIS 1.1] 파일 권한 결과 수집"
+  ansible.builtin.set_fact:
+    cis_report_list: "{{ cis_report_list + [{
+      'id': item.item.id,
+      'category': 'Initial Setup / Filesystem',
+      'title': item.item.title,
+      'status': (item.stat.exists and item.stat.mode <= item.item.max_mode) | ternary('PASS', 'FAIL')
+    }] }}"
+  loop: "{{ file_stats.results }}"
